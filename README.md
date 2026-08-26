@@ -112,8 +112,8 @@ Launch an EC2 instance with:
 
 ``` text
 Name: WebServer-Base
-AMI: Amazon Linux 2023
-Instance Type: t2.micro
+AMI: Ubuntu Linux 2023
+Instance Type: t3.micro
 Key Pair: Your-Key
 Security Group: WebServer-SG
 ```
@@ -143,31 +143,31 @@ ssh -i your-key.pem ec2-user@PUBLIC-IP
 Update packages:
 
 ``` bash
-sudo dnf update -y
+sudo apt update -y
 ```
 
-Install Apache:
+Install Nginx:
 
 ``` bash
-sudo dnf install httpd -y
+sudo dnf install nginx -y
 ```
 
-Start Apache:
+Start Nginx:
 
 ``` bash
-sudo systemctl start httpd
+sudo systemctl start nginx
 ```
 
-Enable Apache at boot:
+Enable Nginx at boot:
 
 ``` bash
-sudo systemctl enable httpd
+sudo systemctl enable nginx
 ```
 
 Check status:
 
 ``` bash
-sudo systemctl status httpd
+sudo systemctl status nginx
 ```
 
 Expected status:
@@ -310,7 +310,7 @@ Configuration:
 
 ``` text
 AMI: WebServer-AMI
-Instance Type: t2.micro
+Instance Type: t3.micro
 Key Pair: Your-Key
 Security Group: WebServer-SG
 ```
@@ -475,7 +475,7 @@ Target 2 → Healthy
 Copy the ALB DNS name and open:
 
 ``` text
-http://ALB-DNS-NAME
+http://YOUR-ALB-DNS-NAME
 ```
 
 The application should load through the Load Balancer.
