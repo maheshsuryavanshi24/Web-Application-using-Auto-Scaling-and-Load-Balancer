@@ -187,23 +187,78 @@ Active: active (running)
 Create the application page:
 
 ``` bash
-sudo nano /var/www/html/index.html
-```
+#!/bin/bash
 
-Example:
+# Update and upgrade packages
+apt-get update -y
+apt-get upgrade -y
 
-``` html
+# Install Python and Nginx
+apt-get install -y python3 python3-pip nginx
+
+# Get instance metadata
+TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+PRIVATE_IP=$(curl -s \
+  -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/local-ipv4)
+
+INSTANCE_ID=$(curl -s \
+  -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/instance-id)
+
+# Create a dynamic HTML page
+cat > /var/www/html/index.html <<EOF
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Auto Scaling Demo</title>
+    <title>Cravita Load Balancer Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        h1 {
+            color: #232f3e;
+        }
+        .server {
+            font-size: 24px;
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #232f3e;
+            border-radius: 10px;
+            display: inline-block;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Auto Scaling Web Application</h1>
-    <h2>Welcome to AWS Auto Scaling Project</h2>
-    <p>Server: WebServer-Base</p>
+
+    <h1>Cravita Load Balancer Demo</h1>
+
+    <div class="server">
+        <h2>Backend Server</h2>
+
+        <p><strong>Private IP:</strong> $PRIVATE_IP</p>
+
+        <p><strong>Instance ID:</strong> $INSTANCE_ID</p>
+
+    </div>
+
 </body>
 </html>
+EOF
+
+# Start Nginx
+systemctl start nginx
+
+# Enable Nginx at boot
+systemctl enable nginx
+
+# Restart Nginx
+systemctl restart nginx
 ```
 
 Test using:
