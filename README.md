@@ -138,7 +138,7 @@ ssh -i your-key.pem ec2-user@PUBLIC-IP
 
 ------------------------------------------------------------------------
 
-## Step 5 --- Install Apache
+## Step 5 --- Install Nginx
 
 Update packages:
 
